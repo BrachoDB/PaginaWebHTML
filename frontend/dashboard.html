@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema Parqueadero</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <div class="logo">🅿️ ParkingSystem</div>
+        <div class="user-controls">
+            <span id="userNameDisplay" style="font-weight: 500;">Usuario</span>
+            <button id="logoutBtn" class="btn btn-primary" style="padding: 0.5rem 1rem; width: auto;">Cerrar
+                Sesión</button>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <div id="operatorView" class="hidden">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem;">
+                <div class="tabs" style="margin-bottom: 0; border: none;">
+                    <button class="tab-btn active" onclick="switchVehicleTab('Sedan')">Autos</button>
+                    <button class="tab-btn" onclick="switchVehicleTab('Pickup')">Camionetas</button>
+                    <button class="tab-btn" onclick="switchVehicleTab('Motorcycle')">Motos</button>
+                </div>
+                <div class="search-box" style="display: flex; gap: 0.5rem; flex: 1; max-width: 400px;">
+                    <input type="text" id="searchPlateInput" class="form-input" placeholder="Buscar placa (ABC-123)..."
+                        style="text-transform: uppercase;">
+                    <button class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem;"
+                        onclick="handlePlateSearch()">🔍</button>
+                </div>
+            </div>
+
+            <div class="stats-bar" style="margin-bottom: 1rem; display: flex; gap: 2rem;">
+                <div>Disponibles: <span id="availableCount" class="text-success font-bold">--</span></div>
+                <div>Ocupados: <span id="occupiedCount" class="text-danger font-bold">--</span></div>
+            </div>
+
+            <div id="parkingGrid" class="parking-grid">
+                <!-- Slots generated via JS -->
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="adminView" class="hidden">
+            <h1 style="margin-bottom: 1.5rem;">Panel de Administración</h1>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchAdminTab('dashboard')">Dashboard</button>
+                <button class="tab-btn" onclick="switchAdminTab('users')">Usuarios</button>
+                <button class="tab-btn" onclick="switchAdminTab('tariffs')">Tarifas</button>
+                <button class="tab-btn" onclick="switchAdminTab('spaces')">Espacios</button>
+                <button class="tab-btn" onclick="switchAdminTab('reports')">Reportes</button>
+            </div>
+
+            <!-- DASHBOARD PANEL -->
+            <div id="dashboardPanel">
+                <div class="stats-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Espacios</div>
+                        <div class="stat-value" id="statTotalSpaces">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Disponibles</div>
+                        <div class="stat-value text-success" id="statAvailableSpaces">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ocupados</div>
+                        <div class="stat-value text-danger" id="statOccupiedSpaces">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Vehículos Activos</div>
+                        <div class="stat-value" id="statActiveVehicles">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Hoy</div>
+                        <div class="stat-value text-success" id="statTodayRevenue">$0.00</div>
+                    </div>
+                </div>
+
+                <h3>Actividad Reciente</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Tipo</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentActivityBody">
+                        <!-- Recent activity rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- USERS PANEL -->
+            <div id="usersPanel" class="hidden">
+                <button class="btn btn-primary" style="width: auto; margin-bottom: 1rem;" onclick="openUserModal()">+
+                    Nuevo Usuario</button>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users Row -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TARIFFS PANEL -->
+            <div id="tariffsPanel" class="hidden">
+                <button class="btn btn-primary" style="width: auto; margin-bottom: 1rem;" onclick="openTariffModal()">+
+                    Nueva Tarifa</button>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Vehículo</th>
+                            <th>Tipo Cobro</th>
+                            <th>Valor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tariffsTableBody">
+                        <!-- Tariffs Row -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SPACES PANEL -->
+            <div id="spacesPanel" class="hidden">
+                <div class="tabs" style="margin-bottom: 1rem;">
+                    <button class="tab-btn active" onclick="filterSpaces('all')">Todos</button>
+                    <button class="tab-btn" onclick="filterSpaces('Sedan')">Autos</button>
+                    <button class="tab-btn" onclick="filterSpaces('Pickup')">Camionetas</button>
+                    <button class="tab-btn" onclick="filterSpaces('Motorcycle')">Motos</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Placa Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spacesTableBody">
+                        <!-- Spaces rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- REPORTS PANEL -->
+            <div id="reportsPanel" class="hidden">
+                <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Fecha Inicio</label>
+                        <input type="date" id="reportStartDate" class="form-input" style="width: auto;">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Fecha Fin</label>
+                        <input type="date" id="reportEndDate" class="form-input" style="width: auto;">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Tipo Vehículo</label>
+                        <select id="reportVehicleType" class="form-input" style="width: auto;">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width: auto; align-self: flex-end;"
+                        onclick="loadReports()">Buscar</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Tipo</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Duración (min)</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsTableBody">
+                        <!-- Reports rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ENTRY MODAL -->
+    <div id="entryModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeModal('entryModal')">&times;</button>
+            <h2 style="margin-bottom: 1rem;">Registrar Entrada</h2>
+            <form id="entryForm">
+                <input type="hidden" id="entrySpaceId">
+                <div class="form-group">
+                    <label class="form-label">Placa</label>
+                    <input type="text" id="entryPlate" class="form-input" placeholder="ABC-123" required
+                        style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo Vehículo</label>
+                    <select id="entryVehicleType" class="form-input" disabled>
+                        <!-- Loaded via JS -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar Ingreso</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- EXIT/PAYMENT MODAL -->
+    <div id="exitModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeModal('exitModal')">&times;</button>
+            <h2 style="margin-bottom: 1rem;">Registrar Salida</h2>
+            <div id="paymentDetails" style="margin-bottom: 1.5rem;">
+                <p>Placa: <strong id="exitPlate">---</strong></p>
+                <p>Tiempo Total: <strong id="exitDuration">---</strong> minutos</p>
+                <p style="font-size: 1.5rem; margin-top: 1rem;">Total a Pagar: <strong id="exitAmount"
+                        class="text-success">$0.00</strong></p>
+            </div>
+            <button id="confirmExitBtn" class="btn btn-primary">Confirmar Pago y Salida</button>
+        </div>
+    </div>
+
+    <!-- USER MODAL -->
+    <div id="userModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeModal('userModal')">&times;</button>
+            <h2 style="margin-bottom: 1rem;" id="userModalTitle">Nuevo Usuario</h2>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" id="userUsername" class="form-input" placeholder="usuario123" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" id="userPassword" class="form-input" placeholder="••••••••">
+                    <small style="color: #888;">Dejar en blanco para mantener la contraseña actual</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rol</label>
+                    <select id="userRole" class="form-input" required>
+                        <!-- Loaded via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="userIsActive" checked>
+                        Usuario Activo
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TARIFF MODAL -->
+    <div id="tariffModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-modal" onclick="closeModal('tariffModal')">&times;</button>
+            <h2 style="margin-bottom: 1rem;" id="tariffModalTitle">Nueva Tarifa</h2>
+            <form id="tariffForm">
+                <input type="hidden" id="tariffId">
+                <div class="form-group">
+                    <label class="form-label">Tipo de Vehículo</label>
+                    <select id="tariffVehicleType" class="form-input" required>
+                        <!-- Loaded via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-group">Tipo de Cobro</label>
+                    <select id="tariffBillingType" class="form-input" required>
+                        <option value="PER_HOUR">Por Hora</option>
+                        <option value="PER_DAY">Por Día</option>
+                        <option value="FLAT">Tarifa Plana</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Costo ($)</label>
+                    <input type="number" id="tariffCost" class="form-input" placeholder="10.00" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Tarifa</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TICKET MODAL -->
+    <div id="ticketModal" class="modal-overlay">
+        <div class="modal" style="max-width: 350px;">
+            <div id="ticketPrintable"
+                style="background: white; color: black; padding: 1.5rem; border: 1px dashed #ccc; font-family: 'Courier New', Courier, monospace; text-align: center;">
+                <h3 style="margin-bottom: 0.5rem;">🅿️ PARKING SYSTEM</h3>
+                <p
+                    style="font-size: 0.8rem; border-bottom: 1px dashed #000; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    COMPROBANTE DE PAGO</p>
+                <div style="text-align: left; font-size: 0.9rem;">
+                    <p><strong>CÓDIGO:</strong> <span id="tickCode">---</span></p>
+                    <p><strong>PLACA:</strong> <span id="tickPlate">---</span></p>
+                    <p><strong>TIPO:</strong> <span id="tickType">---</span></p>
+                    <p><strong>ENTRADA:</strong> <span id="tickEntry">---</span></p>
+                    <p><strong>SALIDA:</strong> <span id="tickExit">---</span></p>
+                    <p><strong>DURACIÓN:</strong> <span id="tickDir">---</span> min</p>
+                    <hr style="border: none; border-top: 1px dashed #000; margin: 1rem 0;">
+                    <p style="font-size: 1.2rem; text-align: center;"><strong>TOTAL: $<span
+                                id="tickAmount">0.00</span></strong></p>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.7rem;">¡Gracias por su visita!</p>
+            </div>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" onclick="window.print()">Imprimir</button>
+                <button class="btn" style="background: #ccc; color: #333;"
+                    onclick="closeModal('ticketModal')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WHATSAPP FLOAT -->
+    <a href="https://wa.me/1234567890" target="_blank" class="whatsapp-float">
+        W
+    </a>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
