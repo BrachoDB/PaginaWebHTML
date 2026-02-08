@@ -1,0 +1,13 @@
+.env
+
+
+/vendo
+
+
+.DS_Store
+node_modules
+
+.bin
+.test
+logs
+*.log
