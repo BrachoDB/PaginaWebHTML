@@ -26,9 +26,9 @@ exports.quoteExit = async (req, res) => {
             return res.status(500).json({ message: 'No active tariff found' });
         }
 
-        const { amount, durationMinutes } = billingService.calculateCost(record.entryTime, exitTime, tariff);
+        const { total, durationMinutes } = billingService.calculateCost(record.entryTime, exitTime, tariff);
 
-        res.json({ amount, durationMinutes, plate });
+        res.json({ amount: total, durationMinutes, plate });
 
     } catch (error) {
         res.status(500).json({ message: 'Error calculating quote', error: error.message });
