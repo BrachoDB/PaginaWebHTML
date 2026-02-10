@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 exports.createUser = async (req, res) => {
     try {
-        const { username, password, rol_id } = req.body;
+        const { username, password, rol_id, email } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ nombre: username, username, password: hashedPassword, rol_id });
         res.status(201).json(user);
@@ -27,10 +27,10 @@ exports.getUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, rol_id, isActive } = req.body;
+        const { username, rol_id, isActive, email } = req.body;
         // Password update should be separate or handled carefully (hash it if present)
 
-        const updateData = { nombre: username, username, rol_id, isActive };
+        const updateData = { nombre: username, email, rol_id, isActive };
         if (req.body.password) {
             updateData.password = await bcrypt.hash(req.body.password, 10);
         }
