@@ -20,7 +20,7 @@ if (loginForm) {
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
-            localStorage.setItem('email', email);
+            localStorage.setItem('username',data.username)
 
             window.location.href = 'dashboard.html';
         } catch (error) {
