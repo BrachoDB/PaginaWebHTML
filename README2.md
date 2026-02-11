@@ -75,7 +75,7 @@ Sigue estos pasos para desplegar el proyecto localmente:
 El sistema viene con los siguientes usuarios pre-creados:
 
 **Módulo Administrativo**
--   **Usuario**: `admin`
+-   **Usuario**: `admini@gmail.com`
 -   **Contraseña**: `admin123`
 -   **Rol**: ADMIN (Gestión total)
 

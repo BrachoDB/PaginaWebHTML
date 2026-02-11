@@ -42,7 +42,7 @@ Este archivo se encargará de:
 ## Usuarios de Prueba
 | Rol | Usuario | Contraseña |
 | :--- | :--- | :--- |
-| **Administrador** | `admin` | `admin123` |
+| **Administrador** | `admin@gmail.com` | `admin123` |
 
 ---
 
