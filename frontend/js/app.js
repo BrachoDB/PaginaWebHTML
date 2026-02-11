@@ -149,6 +149,7 @@ function setupEventListeners() {
                 if (user) {
                     document.getElementById('userId').value = user.id;
                     document.getElementById('userUsername').value = user.username;
+                    if (document.getElementById('userEmail')) document.getElementById('userEmail').value = user.email || '';
                     document.getElementById('userRole').value = user.rol_id;
                     document.getElementById('userIsActive').checked = user.isActive;
                 }
@@ -444,8 +445,9 @@ async function handleUserSubmit(e) {
     const password = document.getElementById('userPassword').value;
     const rol_id = document.getElementById('userRole').value;
     const isActive = document.getElementById('userIsActive').checked;
+    const email = document.getElementById('userEmail') ? document.getElementById('userEmail').value : '';
 
-    const userData = { username, rol_id, isActive };
+    const userData = { username, rol_id, isActive, email };
     if (password) {
         userData.password = password;
     }
