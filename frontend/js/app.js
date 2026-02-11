@@ -23,7 +23,7 @@ function checkAuth() {
         return;
     }
     const userDisplay = document.getElementById('userNameDisplay');
-    if (userDisplay) userDisplay.textContent = localStorage.getItem('username') || 'Usuario';
+    if (userDisplay) userDisplay.textContent = localStorage.getItem('email') || 'Usuario';
 }
 
 async function loadRolesAndVehicleTypes() {
