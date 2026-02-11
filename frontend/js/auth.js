@@ -7,7 +7,7 @@ if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const submitBtn = loginForm.querySelector('button');
 
@@ -16,11 +16,11 @@ if (loginForm) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Cargando...';
 
-            const data = await api.post('/auth/login', { username, password });
+            const data = await api.post('/auth/login', { email, password });
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
-            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
 
             window.location.href = 'dashboard.html';
         } catch (error) {
