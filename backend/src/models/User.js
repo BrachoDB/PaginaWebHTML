@@ -27,7 +27,13 @@ const User = sequelize.define('User', {
     },
     rol_id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: 'ROLES', // Nombre de la tabla de roles (coincide con Role.js)
+            key: 'id'
+        }
+
+    
     }
 }, {
     tableName: 'USUARIOS',
