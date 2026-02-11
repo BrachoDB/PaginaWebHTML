@@ -13,8 +13,8 @@ async function seed() {
         // Admin User
         const hashedPassword = await bcrypt.hash('admin123', 10);
         await User.create({
-            nombre: 'Administrador',
-            username: 'admin',
+            username: 'Administrador',
+            email: 'admin@gmail.com',
             password: hashedPassword,
             rol_id: adminRole.id
         });
@@ -28,11 +28,11 @@ async function seed() {
         // Spaces
         const spaces = [];
         // 20 Sedan (A-1 to A-20)
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 1; i <= 15; i++) {
             spaces.push({ number: 'A-' + i, tipo_vehiculo_id: sedan.id });
         }
         // 10 Pickup (B-1 to B-10)
-        for (let i = 21; i <= 30; i++) {
+        for (let i = 16; i <= 30; i++) {
             spaces.push({ number: 'B-' + (i - 20), tipo_vehiculo_id: pickup.id });
         }
         // 15 Motorcycles (M-1 to M-15)
