@@ -22,8 +22,8 @@ async function seed() {
 
         // Vehicle Types
         const sedan = await VehicleType.create({ nombre: 'Sedan' });
-        const pickup = await VehicleType.create({ nombre: 'Pickup' });
-        const motorcycle = await VehicleType.create({ nombre: 'Motorcycle' });
+        const pickup = await VehicleType.create({ nombre: 'Camioneta' });
+        const motorcycle = await VehicleType.create({ nombre: 'Motocicleta' });
 
         // Spaces
         const spaces = [];
