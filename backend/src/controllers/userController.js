@@ -5,10 +5,17 @@ exports.createUser = async (req, res) => {
     try {
         const { username, password, rol_id, email } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ nombre: username, username, password: hashedPassword, rol_id });
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        if (!validateEmail(email)) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+        const user = await User.create({ username, email, password: hashedPassword, rol_id });
         res.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating user', error: error.message });
+      res.status(500).json({ message: 'Error creating user: ' + error.message, error: error.message });
     }
 };
 
@@ -30,7 +37,7 @@ exports.updateUser = async (req, res) => {
         const { username, rol_id, isActive, email } = req.body;
         // Password update should be separate or handled carefully (hash it if present)
 
-        const updateData = { nombre: username, email, rol_id, isActive };
+        const updateData = { username, email, rol_id, isActive };
         if (req.body.password) {
             updateData.password = await bcrypt.hash(req.body.password, 10);
         }
@@ -43,7 +50,8 @@ exports.updateUser = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error updating user', error: error.message });
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Error updating user: ' + error.message, error: error.message });
     }
 };
 
