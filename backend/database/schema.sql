@@ -95,12 +95,15 @@ INSERT INTO TIPOS_VEHICULO (nombre, descripcion) VALUES
 -- Espacios (Example: 5 of each for brevity, usually script generates many)
 -- Autos (Sedan)
 INSERT INTO ESPACIOS (codigo, tipo_vehiculo_id, disponible) VALUES 
-('A-01', 1, TRUE), ('A-02', 1, TRUE), ('A-03', 1, TRUE), ('A-04', 1, TRUE), ('A-05', 1, TRUE);
+('A-01', 1, TRUE), ('A-02', 1, TRUE), ('A-03', 1, TRUE), ('A-04', 1, TRUE), ('A-05', 1, TRUE),
+('A-06', 1, TRUE), ('A-07', 1, TRUE), ('A-08', 1, TRUE), ('A-09', 1, TRUE), ('A-10', 1, TRUE);
 
 -- Camionetas
 INSERT INTO ESPACIOS (codigo, tipo_vehiculo_id, disponible) VALUES 
-('B-01', 2, TRUE), ('B-02', 2, TRUE), ('B-03', 2, TRUE), ('B-04', 2, TRUE), ('B-05', 2, TRUE);
+('B-01', 2, TRUE), ('B-02', 2, TRUE), ('B-03', 2, TRUE), ('B-04', 2, TRUE), ('B-05', 2, TRUE),
+('B-06', 2, TRUE), ('B-07', 2, TRUE), ('B-08', 2, TRUE), ('B-09', 2, TRUE), ('B-10', 2, TRUE);
 
 -- Motos
 INSERT INTO ESPACIOS (codigo, tipo_vehiculo_id, disponible) VALUES 
-('M-01', 3, TRUE), ('M-02', 3, TRUE), ('M-03', 3, TRUE), ('M-04', 3, TRUE), ('M-05', 3, TRUE);
+('M-01', 3, TRUE), ('M-02', 3, TRUE), ('M-03', 3, TRUE), ('M-04', 3, TRUE), ('M-05', 3, TRUE),
+('M-06', 3, TRUE), ('M-07', 3, TRUE), ('M-08', 3, TRUE), ('M-09', 3, TRUE), ('M-10', 3, TRUE);
