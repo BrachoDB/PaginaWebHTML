@@ -27,13 +27,13 @@ async function seed() {
 
         // Spaces
         const spaces = [];
-        // 20 Sedan (A-1 to A-20)
+        // 15 Sedan (A-1 to A-15)
         for (let i = 1; i <= 15; i++) {
             spaces.push({ number: 'A-' + i, tipo_vehiculo_id: sedan.id });
         }
-        // 10 Pickup (B-1 to B-10)
+        // 15 Pickup (B-1 to B-15)
         for (let i = 16; i <= 30; i++) {
-            spaces.push({ number: 'B-' + (i - 20), tipo_vehiculo_id: pickup.id });
+            spaces.push({ number: 'B-' + (i - 15), tipo_vehiculo_id: pickup.id });
         }
         // 15 Motorcycles (M-1 to M-15)
         for (let i = 31; i <= 45; i++) {
