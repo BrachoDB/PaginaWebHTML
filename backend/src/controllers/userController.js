@@ -1,4 +1,5 @@
 const { User, Role } = require('../models');
+const { validateEmail } = require('../utils/validateEmail');
 const bcrypt = require('bcryptjs');
 
 exports.createUser = async (req, res) => {
@@ -68,3 +69,7 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ message: 'Error deleting user', error: error.message });
     }
 };
+function newFunction() {
+    return require('../services');
+}
+
