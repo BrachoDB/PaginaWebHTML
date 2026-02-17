@@ -1,4 +1,5 @@
 import { api } from './api.js';
+import { validatePlate } from './utils/validatePlate.js';
 
 // --- Global State ---
 let currentUserRole = localStorage.getItem('role');
@@ -229,6 +230,11 @@ function setupEventListeners() {
         const plate = input.value.trim().toUpperCase();
         if (!plate) return;
 
+        if (!validatePlate(plate)) {
+            showNotification('Formato de placa inválido. Use LLL-NNN (Ej: ABC-123)', 'error');
+            return;
+        }
+
         try {
             const vehicle = await api.get(`/vehicles/search/${plate}`);
             if (vehicle) {
@@ -335,10 +341,14 @@ function showEntryModal(space) {
 
 async function handleEntrySubmit(e) {
     e.preventDefault();
-    const plate = document.getElementById('entryPlate').value;
+    const plate = document.getElementById('entryPlate').value.trim().toUpperCase();
     const vehicleTypeId = document.getElementById('entryVehicleType').value;
     const spaceId = document.getElementById('entrySpaceId').value;
-
+    // validacion de formato de placa
+    if (!validatePlate(plate)) {
+        showNotification('Formato de placa inválido. Use LLL-NNN (Ej: ABC-123)', 'error');
+        return;
+    }
     try {
         await api.post('/vehicles/entry', { plate, vehicleTypeId, spaceId });
         closeModal('entryModal');
