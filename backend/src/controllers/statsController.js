@@ -13,7 +13,7 @@ exports.getDashboardStats = async (req, res) => {
         const availableSpaces = totalSpaces - occupiedSpaces;
 
         // Vehículos activos (registros sin salida)
-        const activeVehicles = await Record.count({ where: { exitTime: null } });
+        const activeVehicles = await Record.count({ where: { status: 'ACTIVE' } });
 
         // Ingresos del día
         const today = new Date();
@@ -61,11 +61,19 @@ exports.getReports = async (req, res) => {
 
         const whereClause = {};
 
-        if (startDate && endDate) {
-            whereClause.entryTime = {
-                [Op.gte]: new Date(startDate),
-                [Op.lte]: new Date(endDate)
-            };
+        // Manejo flexible de fechas para el reporte
+        if (startDate || endDate) {
+            whereClause.entryTime = {};
+            if (startDate) {
+                const startOfDay = new Date(startDate);
+                startOfDay.setUTCHours(0, 0, 0, 0); // Busca desde el inicio del día
+                whereClause.entryTime[Op.gte] = startOfDay;
+            }
+            if (endDate) {
+                const endOfDay = new Date(endDate);
+                endOfDay.setUTCHours(23, 59, 59, 999); // Busca hasta el final del día
+                whereClause.entryTime[Op.lte] = endOfDay;
+            }
         }
 
         if (tipo_vehiculo_id) {
