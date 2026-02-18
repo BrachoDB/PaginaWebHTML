@@ -1,10 +1,15 @@
 const { Record, Space, VehicleType, Tariff, Ticket, sequelize } = require('../models');
 const billingService = require('../services/billingService');
+const { validatePlate } = require('../utils/validatePlate');
 const { Op } = require('sequelize');
 
 exports.quoteExit = async (req, res) => {
     try {
         const { plate } = req.body;
+        if (!validatePlate(plate)) {
+            return res.status(400).json({ message: 'Invalid plate format' });
+        }
+
         const record = await Record.findOne({
             where: { plate, status: 'ACTIVE' },
             include: [{ model: VehicleType }]
@@ -60,12 +65,15 @@ exports.registerEntry = async (req, res) => {
     const t = await sequelize.transaction();
     try {
         const { plate, vehicleTypeId, spaceId } = req.body;
-
+         if (!validatePlate(plate)) {
+            await t.rollback();
+            return res.status(400).json({ message: 'invalid plate format. Use LLL-NNN (Ej: ABC-123)' });
+        }
         // 1. Check if vehicle type exists
         const vehicleType = await VehicleType.findByPk(vehicleTypeId);
         if (!vehicleType) {
             await t.rollback();
-            return res.status(404).json({ message: 'Tipo de vehículo no encontrado' });
+            return res.status(404).json({ message: 'Vehicle type not found' });
         }
 
         // 2. Check if already inside
@@ -124,6 +132,11 @@ exports.registerExit = async (req, res) => {
     const t = await sequelize.transaction();
     try {
         const { plate } = req.body;
+
+        if (!validatePlate(plate)) {
+            await t.rollback();
+            return res.status(400).json({ message: 'Formato de placa inválido. Debe ser AAA-123' });
+        }
 
         // 1. Find active record
         const record = await Record.findOne({
