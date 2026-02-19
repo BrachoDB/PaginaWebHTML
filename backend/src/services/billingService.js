@@ -11,11 +11,15 @@ exports.calculateCost = (entryTime, exitTime, tariff, options = {}) => {
     const durationMs = new Date(exitTime) - new Date(entryTime);
     const durationMinutes = Math.ceil(durationMs / (1000 * 60)); // Total minutes rounded up
 
+    // Detectar campos en español (DB) o inglés (Modelo) para compatibilidad
+    const billingType = tariff.billingType || tariff.tipo_cobro;
+    const cost = parseFloat(tariff.cost || tariff.valor);
+
     // Safety check for negative duration
     if (durationMinutes < 0) {
         return {
             durationMinutes: 0,
-            tariffApplied: tariff.billingType,
+            tariffApplied: billingType,
             subtotal: 0,
             discount: 0,
             total: 0
@@ -24,19 +28,22 @@ exports.calculateCost = (entryTime, exitTime, tariff, options = {}) => {
 
     // 1. Calculate Subtotal
     let subtotal = 0;
-    const cost = parseFloat(tariff.cost);
 
-    switch (tariff.billingType) {
+    switch (billingType) {
         case 'PER_MINUTE':
+        case 'MINUTO':
             subtotal = durationMinutes * cost;
             break;
         case 'PER_HOUR':
+        case 'HORA':
             subtotal = Math.ceil(durationMinutes / 60) * cost;
             break;
         case 'PER_DAY':
+        case 'DIA':
             subtotal = Math.ceil(durationMinutes / (60 * 24)) * cost;
             break;
         case 'FRACTION':
+        case 'FRACCION':
             // Assuming fraction is 15 mins blocks as requested previously
             subtotal = Math.ceil(durationMinutes / 15) * cost;
             break;
@@ -48,7 +55,7 @@ exports.calculateCost = (entryTime, exitTime, tariff, options = {}) => {
     if (options.isCourtesy) {
         return {
             durationMinutes,
-            tariffApplied: tariff.billingType,
+            tariffApplied: billingType,
             subtotal: parseFloat(subtotal.toFixed(2)),
             discount: parseFloat(subtotal.toFixed(2)), // Discount is full amount
             total: 0,
@@ -71,7 +78,7 @@ exports.calculateCost = (entryTime, exitTime, tariff, options = {}) => {
 
     return {
         durationMinutes,
-        tariffApplied: tariff.billingType,
+        tariffApplied: billingType,
         subtotal: parseFloat(subtotal.toFixed(2)),
         discount: parseFloat(discountAmount.toFixed(2)),
         total: parseFloat(total.toFixed(2))
