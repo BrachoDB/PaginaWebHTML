@@ -190,7 +190,7 @@
                             <th>Tipo</th>
                             <th>Entrada</th>
                             <th>Salida</th>
-                            <th>Duración (min)</th>
+                            <th>Duración</th>
                             <th>Monto</th>
                         </tr>
                     </thead>
@@ -232,7 +232,7 @@
             <h2 style="margin-bottom: 1rem;">Registrar Salida</h2>
             <div id="paymentDetails" style="margin-bottom: 1.5rem;">
                 <p>Placa: <strong id="exitPlate">---</strong></p>
-                <p>Tiempo Total: <strong id="exitDuration">---</strong> minutos</p>
+                        <p>Tiempo Total: <strong id="exitDuration">---</strong></p>
                 <p style="font-size: 1.5rem; margin-top: 1rem;">Total a Pagar: <strong id="exitAmount"
                         class="text-success">$0.00</strong></p>
             </div>
@@ -294,9 +294,10 @@
                 <div class="form-group">
                     <label class="form-group">Tipo de Cobro</label>
                     <select id="tariffBillingType" class="form-input" required>
-                        <option value="PER_HOUR">Por Hora</option>
+                        <option value="PER_MINUTE">Por Minuto</option>
+                        <option value="FRACTION">Por Fracción (15 min)</option>
+                        <option value="PER_HOUR" selected>Por Hora</option>
                         <option value="PER_DAY">Por Día</option>
-                        <option value="FLAT">Tarifa Plana</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -323,7 +324,7 @@
                     <p><strong>TIPO:</strong> <span id="tickType">---</span></p>
                     <p><strong>ENTRADA:</strong> <span id="tickEntry">---</span></p>
                     <p><strong>SALIDA:</strong> <span id="tickExit">---</span></p>
-                    <p><strong>DURACIÓN:</strong> <span id="tickDir">---</span> min</p>
+                    <p><strong>DURACIÓN:</strong> <span id="tickDir">---</span></p>
                     <hr style="border: none; border-top: 1px dashed #000; margin: 1rem 0;">
                     <p style="font-size: 1.2rem; text-align: center;"><strong>TOTAL: $<span
                                 id="tickAmount">0.00</span></strong></p>
