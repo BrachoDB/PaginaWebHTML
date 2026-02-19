@@ -263,7 +263,9 @@ function showTicketModal(ticket, record) {
     document.getElementById('tickType').textContent = record.VehicleType.nombre;
     document.getElementById('tickEntry').textContent = new Date(record.entrada || record.entryTime).toLocaleString();
     document.getElementById('tickExit').textContent = new Date(record.salida || record.exitTime || new Date()).toLocaleString();
-    document.getElementById('tickDir').textContent = ticket.totalTimeMinutes;
+    // DESPUÉS
+    document.getElementById('tickDir').textContent = formatDuration(ticket.totalTimeMinutes);
+
     document.getElementById('tickAmount').textContent = ticket.amount;
 
     document.getElementById('ticketModal').classList.add('active');
@@ -368,7 +370,9 @@ async function showExitModal(record) {
         const quote = await api.post('/vehicles/quote-exit', { plate: record.plate });
 
         document.getElementById('exitPlate').textContent = record.plate;
-        document.getElementById('exitDuration').textContent = quote.durationMinutes;
+        // DESPUÉS
+         document.getElementById('exitDuration').textContent = formatDuration(quote.durationMinutes);
+
         document.getElementById('exitAmount').textContent = `$${quote.amount}`;
 
         document.getElementById('exitModal').classList.add('active');
@@ -587,7 +591,7 @@ async function loadReportsData() {
         tbody.innerHTML = records.map(r => {
             const entryTime = new Date(r.entrada || r.entryTime);
             const exitTime = r.salida || r.exitTime ? new Date(r.salida || r.exitTime) : null;
-            const duration = exitTime ? Math.round((exitTime - entryTime) / 60000) : '--';
+            const durationMinutes = exitTime ? Math.round((exitTime - entryTime) / 60000) : 0;
 
             return `
                 <tr>
@@ -595,7 +599,7 @@ async function loadReportsData() {
                     <td>${r.VehicleType.nombre}</td>
                     <td>${entryTime.toLocaleString()}</td>
                     <td>${exitTime ? exitTime.toLocaleString() : 'Activo'}</td>
-                    <td>${duration}</td>
+                    <td>${exitTime ? formatDuration(durationMinutes) : '--'}</td>
                     <td>${r.Ticket ? '$' + r.Ticket.amount : '--'}</td>
                 </tr>
             `;
@@ -615,4 +619,25 @@ function showNotification(message, type = 'info') {
     } else {
         alert(message);
     }
+}
+
+
+/**
+ * Formatea los minutos totales a un string de horas y minutos (ej: 1h 15min).
+ * @param {number} totalMinutes - El total de minutos.
+ * @returns {string} El texto formateado.
+ */
+function formatDuration(totalMinutes) {
+    if (isNaN(totalMinutes) || totalMinutes < 0) {
+        return '0min';
+    }
+    if (totalMinutes < 60) {
+        return `${totalMinutes}min`;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (minutes === 0) {
+        return `${hours}h`;
+    }
+    return `${hours}h ${minutes}min`;
 }
