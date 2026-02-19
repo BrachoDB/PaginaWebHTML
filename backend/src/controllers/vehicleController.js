@@ -20,11 +20,18 @@ exports.quoteExit = async (req, res) => {
         }
 
         const exitTime = new Date();
+        const today = new Date().toISOString().split('T')[0];
         const tariff = await Tariff.findOne({
             where: {
                 tipo_vehiculo_id: record.tipo_vehiculo_id,
-                isActive: true
-            }
+                isActive: true,
+                startDate: { [Op.lte]: today },
+                [Op.or]: [
+                    { endDate: null },
+                    { endDate: { [Op.gte]: today } }
+                ]
+            },
+            order: [['startDate', 'DESC']]
         });
 
         if (!tariff) {
@@ -170,6 +177,7 @@ exports.registerExit = async (req, res) => {
                     { endDate: { [Op.gte]: today } }
                 ]
             },
+            order: [['startDate', 'DESC']],
             transaction: t
         });
 
