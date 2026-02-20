@@ -493,7 +493,7 @@ async function loadTariffs() {
     tbody.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
     try {
         const tariffs = await api.get('/tariffs');
-        tbody.innerHTML = tariffs.map(t => `
+        tbody.innerHTML = tariffs.filter(t => t.isActive).map(t => `
             <tr>
                 <td>${t.VehicleType.nombre}</td>
                 <td><span class="badge">${t.billingType}</span></td>
