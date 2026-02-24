@@ -4,6 +4,17 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // O tu URL de Vercel del frontend
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Si es una petición preflight (OPTIONS), respondemos de inmediato con 200
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    next();
+});
 
 app.use(express.json());
 app.use(cors());
