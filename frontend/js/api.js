@@ -32,6 +32,11 @@ export const api = {
                 }
             }
 
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("El servidor no devolvió JSON. Revisa la URL de la API.");
+            }
+
             const data = await response.json();
 
             if (!response.ok) {
