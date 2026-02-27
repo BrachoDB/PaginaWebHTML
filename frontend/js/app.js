@@ -95,27 +95,12 @@ function setupEventListeners() {
     }
 
     // Global Window functions for HTML onclick attributes
-   // Reemplaza la función switchVehicleTab por esto:
-window.switchVehicleTab = (type) => {
-    // Mapa de conversión de botones a tipos de vehículos
-    const vehicleTypeMap = {
-        'Sedan': 'Sedan',
-        'Camioneta': 'Camioneta',  // O 'Pickup' dependiendo de tu backend
-        'Motocicleta': 'Motocicleta'  // O 'Moto' dependiendo de tu backend
+    window.switchVehicleTab = (type) => {
+        currentVehicleTab = type;
+        document.querySelectorAll('#operatorView .tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        loadSpaces();
     };
-    
-   currentVehicleTab = vehicle.VehicleType.nombre;
-document.querySelectorAll('#operatorView .tab-btn').forEach(btn => {
-    // Mapeo correcto de tipo de vehículo a texto del botón
-    const vehicleDisplayName = 
-        currentVehicleTab === 'Sedan' ? 'Autos' :
-        currentVehicleTab === 'Camioneta' ? 'Camionetas' :
-        currentVehicleTab === 'Motocicleta' ? 'Motos' : currentVehicleTab;
-    
-    if (btn.textContent.includes(vehicleDisplayName)) {
-        btn.click();
-    }
-});
 
     window.switchAdminTab = (tab) => {
         document.querySelectorAll('#adminView > .tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
